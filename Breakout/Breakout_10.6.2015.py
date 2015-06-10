@@ -15,12 +15,6 @@ ZIDAK_DOL = 20
 PLOSCEK_VIS = 5
 PLOSCEK_DOL = 50
 
-# import pygame
-# pygame.mixer.init()
-# pygame.mixer.music.load("myFile.wav")
-# pygame.mixer.music.play()
-# while pygame.mixer.music.get_busy() == True:
-#     continue
 
 root = Tk()
 
@@ -83,8 +77,6 @@ class Plošček:
 
 
     def premik(self):
-        # self.master.bind("<Left>", self.levo)
-        # self.master.bind("<Right>", self.desno)
         self.master.bind("<Motion>", self.prestavi)
 
     def prestavi(self, event):
@@ -92,13 +84,6 @@ class Plošček:
             self.x = event.x
             self.master.coords(self.plošček, self.x-50, self.y-5, self.x+50, self.y+5)
 
-    # def levo(self, event):
-    #     self.x-=self.hitrost
-    #     self.canvas.coords(self.plošček, self.x-50,self.y-5,self.x+50,self.y+5)
-    #
-    # def desno(self, event):
-    #     self.x+=self.hitrost
-    #     self.canvas.coords(self.plošček, self.x-50,self.y-5,self.x+50,self.y+5)
 
 
 class Zidak:
@@ -134,15 +119,19 @@ class Breakout:
         self.img = PhotoImage(file="bga.png")
         self.canvas.create_image(0,0, anchor=NW, image = self.img)
 
+        self.difficulty = 0
+
         winsound.PlaySound("XXYYZZ.wav", winsound.SND_ASYNC|winsound.SND_LOOP)
 
         self.canvas.grid(row=0, column=1)
         self.krogla = Krogla(self.canvas)
         self.plošček = Plošček(self.canvas)
 
+        self.read()
+
         self.zidaki = []
         for a in range(9):
-            for b in range(5):
+            for b in range(self.difficulty):
                 self.zidaki.append(Zidak(self.canvas, 50 + a*60, 50 + b*40))
 
     def premakni(self):
@@ -153,6 +142,12 @@ class Breakout:
                 break
 
         self.canvas.after(SPEED_UPDATE, self.premakni)
+
+    def read(self):
+        with open("ime.txt") as f:
+            for vrstica in f:
+                self.difficulty = int(vrstica)
+
 
 
 aplikacija = Breakout(root)
